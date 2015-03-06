@@ -1,17 +1,12 @@
 $:.unshift(File.dirname(__FILE__)) unless
   $:.include?(File.dirname(__FILE__)) || $:.include?(File.expand_path(File.dirname(__FILE__)))
-
 module PostalMethods
   VERSION = '1.1.1'
   
   class Client
 
       require 'rubygems'
-      gem 'soap4r'
-      require 'soap/rpc/driver'
-      require 'soap/wsdlDriver'
-      #require 'ruby-debug'
-
+      require 'savon'
       VERBOSE=nil # soap4r is a noisy bugger
       
       require 'postalmethods/exceptions.rb'
@@ -46,10 +41,11 @@ module PostalMethods
 
       def prepare!
         begin
-          self.rpc_driver ||= SOAP::WSDLDriverFactory.new(self.api_uri).create_rpc_driver
+          self.rpc_driver ||= Savon.client(wsdl: api_uri)
         rescue SocketError, RuntimeError
           raise PostalMethods::NoConnectionError
         end
+        self.rpc_driver.globals[:convert_request_keys_to] = :none
         self.prepared = true
         return self
       end

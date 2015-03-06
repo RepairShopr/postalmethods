@@ -8,11 +8,11 @@ module PostalMethods
       ## get status
       opts = {:Username => self.username, :Password => self.password, :ID => id}
       
-      rv = @rpc_driver.getLetterStatusV2(opts)
-      
-            ws_status = rv.getLetterStatusV2Result.resultCode.to_i
-      delivery_status = rv.getLetterStatusV2Result.status.to_i
-          last_update = rv.getLetterStatusV2Result.lastUpdateTime
+      rv = @rpc_driver.call(:get_letter_status_v2, :message=>opts).body[:get_letter_status_v2_response][:get_letter_status_v2_result]
+
+            ws_status = rv[:result_code].to_i
+      delivery_status = rv[:status].to_i
+          last_update = rv[:last_update_time]
       
       if ws_status == -3000
         return [delivery_status, last_update]
@@ -35,11 +35,11 @@ module PostalMethods
       ## get status
       opts = {:Username => self.username, :Password => self.password, :ID => ids}
       
-      rv = @rpc_driver.getLetterStatusV2_Multiple(opts)
-      ws_status = rv.getLetterStatusV2_MultipleResult.resultCode.to_i
+      rv = @rpc_driver.call(:get_letter_status_v2_multiple, :message=>opts).body[:get_letter_status_v2_multiple_response][:get_letter_status_v2_multiple_result]
+      ws_status = rv[:result_code].to_i
       
       if ws_status == -3000
-        return rv.getLetterStatusV2_MultipleResult.letterStatuses.letterStatusAndDesc
+        return rv[:letter_statuses][:letter_status_and_desc]
       elsif API_STATUS_CODES.has_key?(ws_status)
         instance_eval("raise APIStatusCode#{ws_status.to_s.gsub(/( |\-)/,'')}Exception")
       end
@@ -52,12 +52,12 @@ module PostalMethods
       ## get status
       opts = {:Username => self.username, :Password => self.password, :MinID => minid.to_i, :MaxID => maxid.to_i}
       
-      rv = @rpc_driver.getLetterStatusV2_Range(opts)
+      rv = @rpc_driver.call(:get_letter_status_v2_range, :message=>opts).body[:get_letter_status_v2_range_response][:get_letter_status_v2_range_result]
 
-      ws_status = rv.getLetterStatusV2_RangeResult.resultCode.to_i
+      ws_status = rv[:result_code].to_i
       
       if ws_status == -3000
-        return rv.getLetterStatusV2_RangeResult.letterStatuses.letterStatusAndDesc
+        return rv[:letter_statuses][:letter_status_and_desc]
       elsif API_STATUS_CODES.has_key?(ws_status)
         instance_eval("raise APIStatusCode#{ws_status.to_s.gsub(/( |\-)/,'')}Exception")
       end

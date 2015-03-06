@@ -23,7 +23,7 @@ puts rv
 
 == REQUIREMENTS:
 
-* This gem relies on the soap4r gem.
+* This gem relies on the savon gem.
 
 == INSTALL:
 
