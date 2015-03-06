@@ -3,13 +3,13 @@ module PostalMethods
    
    def document=(doc)
      unless doc.class == File
-       doc = open(doc)
+       doc = open(doc, 'rb')
      end
      
      self.to_send = {} if self.to_send.nil?
      
      self.to_send[:extension] = doc.path.to_s.split('.').last
-     self.to_send[:bytes] = doc.read
+     self.to_send[:bytes] = Base64.encode64(doc.read)
      self.to_send[:name] = File.basename(doc.path)
      self.to_send[:file_obj] = doc
    end
