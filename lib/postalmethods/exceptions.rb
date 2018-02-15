@@ -1,30 +1,30 @@
 module PostalMethods
 
-  class GenericCodeError < Exception
+  class GenericCodeError < RuntimeError
     def initialize
       super("You have reached a code error in the ruby gem. Please report to the forums")
     end
   end
 
-  class NoCredentialsException < Exception
+  class NoCredentialsException < RuntimeError
     def initialize
       super("You have failed to provide any credentials")
     end
   end
   
-  class NoPreparationException < Exception
+  class NoPreparationException < RuntimeError
     def initialize
       super("You must prepare the client first with @client.prepare!")
     end
   end
   
-  class InvalidLetterIDsRange < Exception
+  class InvalidLetterIDsRange < RuntimeError
     def initialize
       super("You need to supply an array or a list of ids, comma seperated.")
     end
   end
   
-  class NoConnectionError < Exception
+  class NoConnectionError < RuntimeError
     def initialize
       super("Error connecting to the API server. If you are sure you are online, Please call support.")
     end
@@ -33,7 +33,7 @@ module PostalMethods
   ## base api exception - stolen from Halcyon
   ## http://github.com/mtodd/halcyon/tree/master/LICENSE
   
-  class APIException < Exception
+  class APIException < RuntimeError
     attr_accessor :status, :body
     def initialize(status, body)
       @status = status
